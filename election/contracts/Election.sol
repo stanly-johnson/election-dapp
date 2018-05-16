@@ -17,6 +17,10 @@ contract Election {
 
     uint public candidatesCount;
 
+    event votedEvent (
+      uint indexed _candidateId
+      );
+
     //contructor
     function Election () public {
       addCandidate("John Doe");
@@ -40,6 +44,10 @@ contract Election {
 
       //update voteCount
       candidates[_candidateId].voteCount++;
+
+      //trigger voted event
+      votedEvent(_candidateId);
+
     }
 
 }
