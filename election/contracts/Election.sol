@@ -27,6 +27,7 @@ contract Election {
       addCandidate("Another John Doe");
     }
 
+    //function to map candidates based on candidatesCount as index
     function addCandidate (string _name) private {
       candidatesCount++;
       candidates[candidatesCount] = Candidate(candidatesCount, _name, 0);
