@@ -1,4 +1,4 @@
-pragma solidity ^0.4.17;
+pragma solidity ^0.5.0;
 
 contract Election {
 
@@ -22,12 +22,12 @@ contract Election {
       );
 
     //contructor
-    function Election () public {
+    constructor () public {
       addCandidate("John Doe");
       addCandidate("Another John Doe");
     }
 
-    function addCandidate (string _name) private {
+    function addCandidate (string memory _name) private {
       candidatesCount++;
       candidates[candidatesCount] = Candidate(candidatesCount, _name, 0);
     }
@@ -46,7 +46,7 @@ contract Election {
       candidates[_candidateId].voteCount++;
 
       //trigger voted event
-      votedEvent(_candidateId);
+      emit votedEvent(_candidateId);
 
     }
 
