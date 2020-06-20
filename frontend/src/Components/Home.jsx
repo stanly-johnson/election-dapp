@@ -17,6 +17,7 @@ class Home extends Component {
       voting: false,
     }
     
+    // check the window instance for metamask plugin
     window.addEventListener('load', function () {
       if (window.ethereum) {
         const web3 = new Web3(window.ethereum);
@@ -50,12 +51,14 @@ class Home extends Component {
   }
 
   componentDidMount() {
-    // TODO: Refactor with promise chain
+    // when the component is loaded; get data from contract
     this.web3.eth.getCoinbase((err, account) => {
+      // set the account from metamask as the base account
       this.setState({ account })
       this.election.deployed().then((electionInstance) => {
         this.electionInstance = electionInstance
         this.watchEvents()
+        // loop through mapping and get the list of candidates
         this.electionInstance.candidatesCount().then((candidatesCount) => {
           for (var i = 1; i <= candidatesCount; i++) {
             this.electionInstance.candidates(i).then((candidate) => {
@@ -69,6 +72,7 @@ class Home extends Component {
             });
           }
         })
+        // set the voted value if the current address has already voted
         this.electionInstance.voters(this.state.account).then((hasVoted) => {
           this.setState({ hasVoted, loading: false })
         })
@@ -76,6 +80,7 @@ class Home extends Component {
     })
   }
 
+  // watch for the voted event emmited to change the state from voting to normal
   watchEvents() {
     this.electionInstance.votedEvent({}, {
       fromBlock: 0,
@@ -85,6 +90,7 @@ class Home extends Component {
     })
   }
 
+  // function to init smart contract voting function
   castVote(candidateId) {
     this.setState({ voting: true })
     this.electionInstance.vote(candidateId, { from: this.state.account }).then((result) =>
@@ -101,6 +107,7 @@ class Home extends Component {
           <br/>
           { this.state.loading || this.state.voting
             ? <p class='text-center'>Loading...</p>
+            //if the content if loaded, show the candidate table
             : <Content
                 account={this.state.account}
                 candidates={this.state.candidates}
